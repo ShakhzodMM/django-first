@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}
+    E-Bazar - {{customuser}}
+{% endblock title %}
+
+{% block content %}
+    <!-- Profile Start -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12 card mt-5 ">
+                <div class="row">
+                    <div class="col-2 m-3">
+                        <img class="img-thumbnail" width="150" height="150" src="{{customuser.avatar.url}}" alt="Profil rasmi">
+                    </div>
+                    <div class="col-8 m-3">
+                        <h2>{{customuser.get_full_name}}</h2>
+                        <p class="text-muted" >@{{customuser.username}} | {{customuser.email}}</p>
+                        {% if customuser == request.user %}                      
+                        <a class="btn btn-warning" href="{% url 'users:update' %}">Ma'lumotlarni tahrirlash</a>
+                        <a class="btn btn-danger" href="{% url 'password_change' %}">Parolni o'zgartirish</a>
+                        {% endif %}
+                        <a class="btn btn-primary" href="mailto:{{customuser.email}}">Elektron pochta</a>
+                        <a class="btn btn-primary" href="tel:{{customuser.phone_number}}">Qo'ng'iroq qilish</a>
+                        <a class="btn btn-primary" href="http://t.me/@{{customuser.tg_username}}">Telegram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <!-- Profile End -->
+    <!-- Product Cart Start -->
+    <div class="container">
+        <div class=" w-100 mt-4">
+            <h4 class="d-block" >@{{customuser}} joylagan e'lonlar</h4>
+            {% if not customuser.product_set.exists %}
+                <center><p class="text-muted">Hozircha e'lonlar yo'q.</p></center>
+            {% endif %}
+            <div class="d-flex flex-wrap justify-content-between">
+                {% for product in customuser.product_set.all %}
+                <!-- Product Cart Start -->
+                <div class="card border border-0 shadow-sm d-inline-block m-1 mt-3" style="width: 16.5rem;" >
+                    <!-- productimage_set - bu mahsulotga tegishli barcha ProductImage obyektlarini olish uchun ishlatiladi. exists - agar ProductImage obyektlari mavjud bo'lsa True qaytaradi, aks holda False qaytaradi -->
+                    {% if product.productimage_set.exists %} 
+                        <!-- product.productimage_set.first - bu mahsulotga tegishli birinchi ProductImage obyektini olish uchun ishlatiladi -->                                                               
+                        <img height="200" class=" card-img-top" src="{{ product.productimage_set.all.first.image.url }}" alt="">        
+                    {% else %}
+                        <!-- Agar mahsulotga tegishli ProductImage obyektlari mavjud bo'lmasa, default rasmni ko'rsatadi -->
+                        <img height="200" class=" card-img-top" src="#" alt="Standart rasm">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h6 class="align-center card-title">{{product.title}}</h6>
+                        <span class="center card-text"><small>$ {{product.price}}</small></span>
+                        <div class="buttons d-flex flex-wrap justify-content-between ">
+                            <i class="bi bi-bookmark-fill"></i> 
+                            <a href="{% url 'products:detail' product.id %}" class="btn btn-outline-primary" >Batafsil</a>
+                        </div>
+                    </div>
+                </div>  
+                <!-- Product Cart End -->
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- Product Cart End -->
+
+
+{% endblock content %}

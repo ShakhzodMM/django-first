@@ -1,0 +1,5 @@
+db.sqlite3
+__pacache__
+.env
+venv
+pipenv
